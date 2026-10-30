@@ -1,15 +1,13 @@
-import os
-
 from fastapi import FastAPI
-from sqlalchemy import create_engine, text
+from sqlalchemy import text
 
-engine = create_engine(os.environ["DATABASE_URL"])
+from app.database import engine
 
 app = FastAPI(title="Drill Records API")
 
 
 @app.get("/health")
-def health():
-    with engine.connect() as conn:
-        conn.execute(text("SELECT 1"))
+async def health():
+    async with engine.connect() as conn:
+        await conn.execute(text("SELECT 1"))
     return {"status": "ok", "database": "ok"}
